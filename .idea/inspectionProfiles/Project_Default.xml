@@ -1,0 +1,53 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="1">
+            <item index="0" class="java.lang.String" itemvalue="MIT" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="database.Storage.Users.username" />
+          <option value="database.Storage.Users.password" />
+          <option value="database.Storage.UserHistory.id" />
+          <option value="server.database.Storage.Users.password" />
+          <option value="server.database.Storage.UserHistory.id" />
+          <option value="server.database.Storage.Contacts.contact_id" />
+          <option value="client.database.Storage.Contacts.contact" />
+          <option value="database.Storage.Contacts.contact" />
+          <option value="database.Storage.ActiveUsers.user" />
+          <option value="database.Storage.ActiveUsers.ip_address" />
+          <option value="database.Storage.ActiveUsers.port" />
+          <option value="database.Storage.ActiveUsers.login_time" />
+          <option value="database.Storage.MessageHistory.username" />
+          <option value="database.Storage.UserHistory.login_time" />
+          <option value="database.Storage.MessageHistory.sent" />
+          <option value="database.Storage.MessageHistory.accepted" />
+          <option value="database.Storage.MessageHistory.id" />
+          <option value="database.Storage.MessageCount.sent" />
+          <option value="database.Storage.MessageCount.accepted" />
+          <option value="database.Storage.MessageCount.username" />
+          <option value="client.database.Storage.KnownUsers.username" />
+          <option value="client.database.Storage.MessageHistory.date" />
+          <option value="client.database.Storage.MessageCount.sent" />
+          <option value="client.database.Storage.MessageCount.accepted" />
+          <option value="client.database.Storage.UserInfo.key" />
+          <option value="server.database.Storage.ActiveUsers.user" />
+          <option value="server.database.Storage.ActiveUsers.ip_address" />
+          <option value="server.database.Storage.ActiveUsers.port" />
+          <option value="server.database.Storage.ActiveUsers.login_time" />
+          <option value="server.database.Storage.Users.username" />
+          <option value="server.database.Storage.MessageCount.sent" />
+          <option value="server.database.Storage.MessageCount.accepted" />
+          <option value="server.database.Storage.Contacts.contact" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
