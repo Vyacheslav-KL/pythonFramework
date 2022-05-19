@@ -2,6 +2,7 @@ from os import path
 from pathlib import Path
 
 from framework.content_types import CONTENT_TYPES_MAP
+from framework.requests import Get, Post
 
 
 class PageNotFound:
@@ -20,8 +21,25 @@ class Framework:
 
     def __call__(self, environ, start_response):
         path = environ['PATH_INFO']
+        request = {
+            'method': environ['REQUEST_METHOD']
+        }
+        # print(environ)
         if not path.endswith('/'):
             path = f'{path}/'
+
+        if environ['REQUEST_METHOD'] == 'POST' and environ['CONTENT_LENGTH']:
+            request_params = Post(environ)
+            request_params.get_params()
+            request['data'] = request_params.result
+            request_params.decode_result()
+            print(request_params.decoded_result)
+
+        if environ['REQUEST_METHOD'] == 'GET' and environ['QUERY_STRING']:
+            request_params = Get(environ)
+            request_params.get_params()
+            request['request_params'] = request_params.result
+            print(request_params.result)
 
         if path in self.route_list:
             view = self.route_list[path]
