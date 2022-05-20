@@ -6,7 +6,7 @@ from framework.requests import Get, Post
 
 
 class PageNotFound:
-    def __call__(self):
+    def __call__(self, request):
         return '404 error', '404 Page not found'
 
 
@@ -44,7 +44,7 @@ class Framework:
         if path in self.route_list:
             view = self.route_list[path]
             content_type = self.get_content_type(path)
-            code, body = view()
+            code, body = view(request)
             body = body.encode('utf-8')
         elif path.startswith(self.static_url):
             file_path = path[len(self.static_url):len(path)-1]
@@ -53,7 +53,7 @@ class Framework:
         else:
             view = PageNotFound()
             content_type = self.get_content_type(path)
-            code, body = view()
+            code, body = view(request)
             body = body.encode('utf-8')
 
         start_response(code, [('Content-Type', content_type)])
