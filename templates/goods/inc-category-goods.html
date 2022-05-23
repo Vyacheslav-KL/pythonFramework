@@ -1,0 +1,8 @@
+{% extends "goods/inc-goods.html" %}
+{% block goods_category %}
+    <h3>Product list for category "{{name}}"</h3>
+    {% for item in goods_list %}
+      <p>{{item.name}}</p>
+      <span class="left"><img src="{{ static }}images/graphic.png" alt="example graphic" /></span>
+    {% endfor %}
+{% endblock %}
