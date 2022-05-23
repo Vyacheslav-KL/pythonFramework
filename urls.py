@@ -1,4 +1,5 @@
-from views import Index, About, Goods, Contact, Page
+from views import Index, About, Goods, Contact, Page, CreateCategory, \
+    CreateProduct, GoodsCategory
 
 
 routes = {
@@ -7,4 +8,7 @@ routes = {
     '/about/': About(),
     '/contact/': Contact(),
     '/page/': Page(),
+    '/create-category/': CreateCategory(),
+    '/add-goods/': CreateProduct(),
+    '/category-goods/': GoodsCategory(),
 }

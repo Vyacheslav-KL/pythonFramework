@@ -1,0 +1,8 @@
+{% extends "goods/inc-goods.html" %}
+{% block all_goods %}
+    {% for item in objects_list.goods %}
+      <h2>{{item.name}}</h2>
+      <p>images can be placed on the left, in the center or on the right:</p>
+      <span class="left"><img src="{{ static }}images/graphic.png" alt="example graphic" /></span>
+    {% endfor %}
+{% endblock %}
