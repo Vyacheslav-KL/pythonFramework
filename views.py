@@ -1,22 +1,30 @@
 from framework.templator import render
 from components.models import Engine, Logger
+from components.decorators import AppRoute, Debug
 
 site = Engine()
 logger = Logger('main')
+routes = {}
 
 
+@AppRoute(routes=routes, url='/')
 class Index:
+    @Debug(name='Index')
     def __call__(self, request):
         return '200 Ok', render('index.html')
 
 
+@AppRoute(routes=routes, url='/goods/')
 class Goods:
+    @Debug(name='Goods')
     def __call__(self, request):
         logger.log('Product list')
         return '200 Ok', render('goods/goods.html', objects_list=site)
 
 
+@AppRoute(routes=routes, url='/category-goods/')
 class GoodsCategory:
+    @Debug(name='category-goods')
     def __call__(self, request):
         logger.log('Product-category list')
         try:
@@ -30,23 +38,30 @@ class GoodsCategory:
             return '200 Ok', render('goods/goods.html', objects_list=site)
 
 
+@AppRoute(routes=routes, url='/about/')
 class About:
+    @Debug(name='about')
     def __call__(self, request):
         return '200 Ok', render('about/about.html')
 
 
+@AppRoute(routes=routes, url='/contact/')
 class Contact:
+    @Debug(name='contact')
     def __call__(self, request):
         return '200 Ok', render('contact/contact.html')
 
 
+@AppRoute(routes=routes, url='/page/')
 class Page:
+    @Debug(name='page')
     def __call__(self, request):
         return '200 Ok', render('page/page.html', objects_list=site.categories)
 
 
+@AppRoute(routes=routes, url='/create-category/')
 class CreateCategory:
-
+    @Debug(name='create-category')
     def __call__(self, request):
 
         if request['method'] == 'POST':
@@ -67,10 +82,12 @@ class CreateCategory:
                                     objects_list=site.categories)
 
 
+@AppRoute(routes=routes, url='/add-goods/')
 class CreateProduct:
 
     category_id = -1
 
+    @Debug(name='add-goods')
     def __call__(self, request):
         if request['method'] == 'POST':
             data = request['data']
