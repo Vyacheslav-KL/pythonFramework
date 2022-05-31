@@ -1,0 +1,8 @@
+{% extends "contact/inc-contact.html" %}
+{% block users_list %}
+    <div>
+        {% for item in objects_list %}
+            <p>{{item.name}}</p>
+        {% endfor %}
+    </div>
+{% endblock %}

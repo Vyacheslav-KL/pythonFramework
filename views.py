@@ -1,17 +1,27 @@
 from framework.templator import render
 from components.models import Engine, Logger
 from components.decorators import AppRoute, Debug
+from components.cbv import ListView, CreateView
+from components.notifier import SmsNotifier, EmailNotifier
 
 site = Engine()
 logger = Logger('main')
 routes = {}
+email = EmailNotifier()
+sms = SmsNotifier()
 
 
 @AppRoute(routes=routes, url='/')
-class Index:
+class Index(CreateView):
+
+    template = 'index.html'
+    logger.log('Index')
+
     @Debug(name='Index')
-    def __call__(self, request):
-        return '200 Ok', render('index.html')
+    def create_obj(self, data):
+        name = site.decode_value(data['name'])
+        new_obj = site.create_user('client', name)
+        site.clients.append(new_obj)
 
 
 @AppRoute(routes=routes, url='/goods/')
@@ -95,7 +105,10 @@ class CreateProduct:
             if self.category_id != -1:
                 category = site.find_category(int(self.category_id))
                 product = site.add_goods(name, category)
+                product.observers.append(email)
+                product.observers.append(sms)
                 site.goods.append(product)
+                product.notify()
 
             return '200 Ok', render('goods/goods.html', objects_list=site)
         else:
@@ -109,3 +122,19 @@ class CreateProduct:
             except KeyError:
                 return '200 Ok', 'There are no categories have been added yet'
 
+
+@AppRoute(routes=routes, url='/users-list/')
+class UsersList(ListView):
+    queryset = site.clients
+    template = 'contact/users-list.html'
+
+
+@AppRoute(routes=routes, url='/add-user/')
+class AddUser(CreateView):
+
+    template = 'contact/add-user.html'
+
+    def create_obj(self, data):
+        name = site.decode_value(data['name'])
+        new_obj = site.create_user('client', name)
+        site.clients.append(new_obj)
