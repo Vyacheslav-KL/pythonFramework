@@ -1,8 +1,11 @@
 import quopri
+from components.notifier import Subject
+from components.writer import FileWriter
 
 
 class User:
-    pass
+    def __init__(self, name):
+        self.name = name
 
 
 class Admin(User):
@@ -10,7 +13,9 @@ class Admin(User):
 
 
 class Client(User):
-    pass
+    def __init__(self, name):
+        super().__init__(name)
+        self.goods = []
 
 
 class UserFactory:
@@ -20,13 +25,14 @@ class UserFactory:
     }
 
     @classmethod
-    def create(cls, essence):
-        return cls.types[essence]()
+    def create(cls, essence, name):
+        return cls.types[essence](name)
 
 
-class Goods:
+class Goods(Subject):
 
     def __init__(self, name, category):
+        super().__init__()
         self.name = name
         self.category = category
         self.category.goods.append(self)
@@ -64,8 +70,8 @@ class Engine:
         self.categories = []
 
     @staticmethod
-    def create_user(essence):
-        return UserFactory.create(essence)
+    def create_user(essence, name):
+        return UserFactory.create(essence, name)
 
     @staticmethod
     def create_category(name, category=None):
@@ -116,6 +122,7 @@ class Logger(metaclass=Singleton):
     def __init__(self, name):
         self.name = name
 
-    @staticmethod
-    def log(text):
-        print('log:', text)
+    def log(self, text):
+        writer = FileWriter(text, self.name)
+        writer.writer()
+
