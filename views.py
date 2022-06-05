@@ -1,14 +1,17 @@
 from framework.templator import render
-from components.models import Engine, Logger
+from components.models import Engine, Logger, MapperRegistry
 from components.decorators import AppRoute, Debug
 from components.cbv import ListView, CreateView
 from components.notifier import SmsNotifier, EmailNotifier
+from components.unit_of_work import UnitOfWork
 
 site = Engine()
 logger = Logger('main')
 routes = {}
 email = EmailNotifier()
 sms = SmsNotifier()
+UnitOfWork.new_current()
+UnitOfWork.get_current().set_mapper_registry(MapperRegistry)
 
 
 @AppRoute(routes=routes, url='/')
@@ -19,9 +22,12 @@ class Index(CreateView):
 
     @Debug(name='Index')
     def create_obj(self, data):
-        name = site.decode_value(data['name'])
-        new_obj = site.create_user('client', name)
+        name = site.decode_value(data.get('name'))
+        new_obj = site.create_user('client')
         site.clients.append(new_obj)
+        schema = {'name': name}
+        new_obj.mark_new(schema)
+        UnitOfWork.get_current().commit()
 
 
 @AppRoute(routes=routes, url='/goods/')
@@ -70,26 +76,16 @@ class Page:
 
 
 @AppRoute(routes=routes, url='/create-category/')
-class CreateCategory:
-    @Debug(name='create-category')
-    def __call__(self, request):
+class CreateCategory(CreateView):
+    template = 'page/create-category.html'
 
-        if request['method'] == 'POST':
-            data = request['data']
-            name = site.decode_value(data['name'])
-            category_id = data.get('category_id')
-            category = None
-            if category_id:
-                category = site.find_category(int(category_id))
-            new_category = site.create_category(name, category)
-            site.categories.append(new_category)
-
-            return '200 Ok', render('goods/goods.html',
-                                    objects_list=site)
-
-        else:
-            return '200 Ok', render('page/create-category.html',
-                                    objects_list=site.categories)
+    def create_obj(self, data):
+        name = site.decode_value(data.get('name'))
+        new_category = site.create_category()
+        site.categories.append(new_category)
+        schema = {'name': name}
+        new_category.mark_new(schema)
+        UnitOfWork.get_current().commit()
 
 
 @AppRoute(routes=routes, url='/add-goods/')
@@ -125,8 +121,12 @@ class CreateProduct:
 
 @AppRoute(routes=routes, url='/users-list/')
 class UsersList(ListView):
-    queryset = site.clients
+
     template = 'contact/users-list.html'
+
+    def get_queryset(self):
+        queryset = MapperRegistry.get_current_mapper('client').all()
+        return queryset
 
 
 @AppRoute(routes=routes, url='/add-user/')
@@ -136,5 +136,8 @@ class AddUser(CreateView):
 
     def create_obj(self, data):
         name = site.decode_value(data['name'])
-        new_obj = site.create_user('client', name)
+        new_obj = site.create_user('client')
         site.clients.append(new_obj)
+        schema = {'name': name}
+        new_obj.mark_new(schema)
+        UnitOfWork.get_current().commit()
