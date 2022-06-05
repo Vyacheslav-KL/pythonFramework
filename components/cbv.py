@@ -14,9 +14,11 @@ class TemplateView:
 class ListView(TemplateView):
     queryset = []
 
+    def get_queryset(self):
+        return self.queryset
+
     def render_template(self):
-        context_data = {'objects_list': self.queryset}
-        print(context_data)
+        context_data = {'objects_list': self.get_queryset()}
         return '200 Ok', render(self.template, **context_data)
 
 
